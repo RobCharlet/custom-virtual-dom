@@ -2,6 +2,8 @@ let name = ""
 let vDOM = createVDOM()
 let prevVDOM
 let elems
+let isDirty = false
+let isUpdateScheduled = false
 
 function createVDOM() {
   return [
@@ -13,9 +15,28 @@ function createVDOM() {
 
 function handle(event) {
   name = event.target.value
+  markDirty()
+}
+
+function markDirty() {
+  isDirty = true
+  scheduleUpdate()
+}
+
+function scheduleUpdate() {
+  if (!isUpdateScheduled) {
+    // Prevent multiple updates
+    isUpdateScheduled = true
+    // Synchronized with the browser's refresh rate
+    requestAnimationFrame(updateDOM)
+  }
 }
 
 function updateDOM() {
+  isUpdateScheduled = false
+  
+  if (!isDirty) return
+  
   if (elems == null) {
     elems = vDOM.map(convert)
     document.body.append(...elems)
@@ -25,6 +46,8 @@ function updateDOM() {
     vDOM = createVDOM()
     findDiff(prevVDOM, vDOM)
   }
+  
+  isDirty = false
 }
 
 function convert(node) {
@@ -75,4 +98,5 @@ function findDiff(prev, current) {
   }
 }
 
-setInterval(updateDOM, 15)
+// Initial render
+markDirty()
