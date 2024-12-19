@@ -1,15 +1,23 @@
 let name = ""
+let posts = ["Gingerbread", "Chocolate", "Vanilla"]
 let vDOM = createVDOM()
 let prevVDOM
 let elems
 let isDirty = false
 let isUpdateScheduled = false
 
+// UI Components example
+function Post(content) {
+  return ["div", content, { padding: "10px", margin: "10px", borderRadius: "4px" }, null]
+}
+
 function createVDOM() {
   return [
     ["input", name, { padding: "10px", margin: "10px", borderRadius: "4px" }, handle],
     ["div", `Hello ${name}`, { color: "blue", fontSize: "20px" }],
-    ["div", "Great job!", { color: "green", fontWeight: "bold" }]
+    ["div", "Great job!", { color: "green", fontWeight: "bold" }],
+    // UI Components example
+    ...posts.map(Post)
   ]
 }
 
