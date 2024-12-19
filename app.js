@@ -5,9 +5,9 @@ let elems
 
 function createVDOM() {
   return [
-    ["input", name, handle],
-    ["div", `Hello ${name}`],
-    ["div", "Great job!"]
+    ["input", name, { padding: "10px", margin: "10px", borderRadius: "4px" }, handle],
+    ["div", `Hello ${name}`, { color: "blue", fontSize: "20px" }],
+    ["div", "Great job!", { color: "green", fontWeight: "bold" }]
   ]
 }
 
@@ -30,7 +30,15 @@ function updateDOM() {
 function convert(node) {
   const element = document.createElement(node[0])
   element.value = node[1]
-  element.oninput = node[2]
+  element.textContent = node[1]
+
+  const styles = node[2]
+  Object.assign(element.style, styles)
+  
+  if (node[3]) {
+    element.oninput = node[3]
+  }
+  
   return element
 }
 
@@ -39,6 +47,7 @@ function findDiff(prev, current) {
     if (JSON.stringify(prev[i]) !== JSON.stringify(current[i])) {
       elems[i].textContent = current[i][1]
       elems[i].value = current[i][1]
+      Object.assign(elems[i].style, current[i][2])
     }
   }
 }
