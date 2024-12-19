@@ -42,9 +42,32 @@ function convert(node) {
   return element
 }
 
+function compareNodes(node1, node2) {
+  // Compare tag
+  if (node1[0] !== node2[0]) return false
+  
+  // Compare content
+  if (node1[1] !== node2[1]) return false
+  
+  // Compare styles
+  const styles1 = node1[2]
+  const styles2 = node2[2]
+  
+  if (Object.keys(styles1).length !== Object.keys(styles2).length) return false
+  
+  for (const key in styles1) {
+    if (styles1[key] !== styles2[key]) return false
+  }
+  
+  // Compare handler (if exists)
+  if (node1[3] !== node2[3]) return false
+  
+  return true
+}
+
 function findDiff(prev, current) {
   for (let i = 0; i < current.length; i++) {
-    if (JSON.stringify(prev[i]) !== JSON.stringify(current[i])) {
+    if (!compareNodes(prev[i], current[i])) {
       elems[i].textContent = current[i][1]
       elems[i].value = current[i][1]
       Object.assign(elems[i].style, current[i][2])
